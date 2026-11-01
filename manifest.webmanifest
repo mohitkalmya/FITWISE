@@ -1,0 +1,22 @@
+{
+  "id": "./",
+  "name": "FITWISE — Nutrition & Training",
+  "short_name": "FITWISE",
+  "description": "Free, private, offline nutrition and training tracker.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#F5F7F2",
+  "theme_color": "#174F3B",
+  "categories": ["health", "fitness", "lifestyle"],
+  "icons": [
+    { "src": "./icons/fitwise-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/fitwise-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/fitwise-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Log food", "short_name": "Food", "url": "./index.html#food", "icons": [{ "src": "./icons/fitwise-192.png", "sizes": "192x192" }] },
+    { "name": "Start workout", "short_name": "Workout", "url": "./index.html#workout", "icons": [{ "src": "./icons/fitwise-192.png", "sizes": "192x192" }] }
+  ]
+}

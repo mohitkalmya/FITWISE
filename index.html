@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#174f3b">
+<script src="js/theme.js"></script>
+<meta name="description" content="FITWISE: free, private, offline nutrition and workout tracker.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/fitwise-192.png">
+<link rel="apple-touch-icon" href="icons/fitwise-192.png">
+<link rel="stylesheet" href="css/app.css">
+<title>FITWISE — Nutrition &amp; Training</title>
+<style>.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}</style>
+</head>
+<body>
+<a class="skiplink" href="#mainContent" id="skipLink">Skip to main content</a>
+<div class="app">
+<header class="top">
+  <div class="brand"><div class="logo" aria-hidden="true">F</div><div><h1>FITWISE</h1><p>YOUR DATA. YOUR PACE. YOUR PROGRESS.</p></div></div>
+  <div class="tag">FREE · PRIVATE · OFFLINE</div>
+</header>
+<nav class="nav" aria-label="Main navigation">
+  <button class="active" data-tab="home">⌂ <span>Home</span></button>
+  <button data-tab="food">◉ <span>Nutrition</span></button>
+  <button data-tab="workout">↗ <span>Training</span></button>
+  <button data-tab="progress">⌁ <span>Progress</span></button>
+  <button data-tab="settings">✳ <span>Growth</span></button>
+</nav>
+
+<main id="mainContent" tabindex="-1">
+
+<!-- ================= HOME ================= -->
+<section class="section active" id="home" aria-labelledby="homeTitle">
+  <div class="hero"><div>
+    <div class="eyebrow" id="greeting">TODAY</div>
+    <h2 id="homeTitle">Small actions. Stronger trends.</h2>
+    <p class="sub" id="profileSummary"></p>
+  </div><div class="datepill" id="todayLabel"></div></div>
+
+  <div class="weekstrip" id="weekStrip" role="group" aria-label="Choose a day to view"></div>
+
+  <div id="onboardBanner" class="note warn hidden" style="margin-bottom:14px">
+    <strong>Confirm your details.</strong> Your starter plan is pre-filled (2,200 kcal · 160 g protein · recomposition). Check your profile once and save it so training and trends match you.
+    <div class="actions" style="margin-top:10px"><button class="btn small" data-go="settings">Review profile</button></div>
+  </div>
+
+  <div class="grid">
+    <article class="card span7">
+      <div class="cardhead"><h3 id="homeDayTitle">Today's nutrition</h3><div class="seg" role="group" aria-label="Calorie display"><button type="button" data-calmode="left">Left</button><button type="button" data-calmode="eaten">Eaten</button></div></div>
+      <div class="sub" style="margin:-6px 0 12px"><span class="pill" id="goalLabel"></span></div>
+      <div class="calrow">
+        <div class="ring" id="calRing" style="--progress:0%" role="img" aria-label="Calories remaining"><div class="ringcontent"><strong id="calRemain">0</strong><span id="calUnit">kcal left</span></div></div>
+        <div class="macro-list">
+          <div class="macroline"><span>Protein</span><div class="bar"><span id="proteinBar" style="width:0%"></span></div><strong id="proteinText"></strong></div>
+          <div class="macroline"><span>Carbs</span><div class="bar carbs"><span id="carbsBar" style="width:0%"></span></div><strong id="carbsText"></strong></div>
+          <div class="macroline"><span>Fat</span><div class="bar fat"><span id="fatBar" style="width:0%"></span></div><strong id="fatText"></strong></div>
+        </div>
+      </div>
+      <h4>Quick add</h4>
+      <div class="chips" id="quickChipsHome"></div>
+      <div class="actions" style="margin-top:14px">
+        <button class="btn" data-go="food">+ Log food</button>
+        <button class="btn secondary" id="waterBtn">＋ 250 ml water</button>
+        <span class="sub" id="waterText" style="align-self:center"></span>
+      </div>
+    </article>
+
+    <article class="card span5">
+      <div class="cardhead"><h3>Today's training</h3><span class="pill" id="trainPill"></span></div>
+      <div id="homeTraining"></div>
+    </article>
+
+    <article class="card span6">
+      <div class="cardhead"><h3>Body weight</h3><span class="pill" id="weightCount">0 weigh-ins</span></div>
+      <div class="big" id="latestWeight">— <span class="unit">kg</span></div>
+      <p class="sub" id="trendCaption"></p>
+      <div class="seg" role="group" aria-label="Chart range" data-seg="home"><button type="button" data-range="7">7d</button><button type="button" data-range="14">14d</button><button type="button" data-range="30">30d</button><button type="button" data-range="90">90d</button></div>
+      <svg class="chart" id="weightChart" viewBox="0 0 400 160" role="img" aria-label="Weight chart"></svg>
+      <p class="sub readout" id="readoutHome" aria-live="polite">Tap a dot to see that day.</p><p class="sub" id="rangeStatsHome"></p>
+      <div class="actions" style="margin-top:8px"><button class="btn secondary small" data-go="progress">Log weight</button></div>
+    </article>
+
+    <article class="card span6">
+      <div class="cardhead"><h3>Next step</h3><span class="pill">No streaks, no guilt</span></div>
+      <div id="nextStep" class="note"></div>
+      <h4>This week</h4>
+      <div id="weekMini" class="daylist"></div>
+      <div id="backupNote" class="note warn hidden" style="margin-top:12px"></div>
+    </article>
+
+    <article class="card span12">
+      <div class="cardhead"><h3 id="homeFoodTitle">Today's food</h3><button class="btn secondary small" data-go="food">Open diary →</button></div>
+      <div class="list" id="recentFoods"></div>
+    </article>
+  </div>
+</section>
+
+<!-- ================= FOOD ================= -->
+<section class="section" id="food" aria-labelledby="foodTitle">
+  <div class="hero"><div>
+    <div class="eyebrow">NUTRITION</div>
+    <h2 id="foodTitle">Food diary</h2>
+    <p>Search the Indian-food catalogue, enter grams or servings, and keep your own recipes. Values are approximate — weigh and read labels when precision matters.</p>
+  </div></div>
+  <div class="grid">
+    <article class="card span5">
+      <div class="cardhead"><h3>Add food</h3><span class="pill" id="foodCount"></span></div>
+      <div class="field"><label for="foodSearch">Search (English, हिन्दी or common names)</label><input id="foodSearch" type="search" placeholder="e.g. chapati, dahi, rohu, chole" autocomplete="off"></div>
+      <h4>Your usual</h4>
+      <div class="chips" id="quickChips"></div>
+      <div id="mealsBlock" class="hidden"><h4>My meals</h4><div class="chips" id="mealChips"></div>
+        <details class="fold"><summary>Manage saved meals</summary><div id="mealManage" class="list" style="margin-top:8px"></div></details></div>
+      <h4>Category</h4>
+      <div class="chips scroll" id="groupChips" role="group" aria-label="Food category"></div>
+      <div class="list" id="foodResults" style="margin-top:12px"></div>
+      <div class="note warn" style="margin-top:14px">Starter values are approximate, not a verified national database. Cooked and raw foods are listed separately — don't swap them. Cooking oil and ghee are separate items so you can log them.</div>
+    </article>
+
+    <article class="card span7">
+      <div class="cardhead"><h3>Diary</h3>
+        <div class="datenav">
+          <button class="iconbtn" id="datePrev" aria-label="Previous day">‹</button>
+          <input type="date" id="diaryDate" aria-label="Diary date">
+          <button class="iconbtn" id="dateNext" aria-label="Next day">›</button>
+        </div>
+      </div>
+      <div class="stats four" id="diaryTotals"></div>
+      <div class="actions" style="margin:12px 0 4px">
+        <button class="btn secondary small" id="copyPrev">Copy previous day</button>
+        <button class="btn secondary small" id="openRecipe">＋ Build a recipe</button>
+      </div>
+      <div id="foodDiary"></div>
+
+      <details class="fold" id="customFold"><summary>Add a custom food (from a label)</summary>
+        <p class="sub">Enter nutrition for one defined serving. It stays in your library; past diary entries keep their recorded values.</p>
+        <form id="customFoodForm" class="formgrid" style="margin-top:10px">
+          <div class="field full"><label for="customName">Name</label><input id="customName" required placeholder="e.g. Protein bar (brand)" maxlength="80"></div>
+          <div class="field"><label for="customServing">Serving weight (g)</label><input id="customServing" type="number" inputmode="decimal" min="1" max="5000" value="100" required></div>
+          <div class="field"><label for="customCalories">Calories per serving</label><input id="customCalories" type="number" inputmode="decimal" min="0" max="5000" required></div>
+          <div class="field"><label for="customProtein">Protein (g)</label><input id="customProtein" type="number" inputmode="decimal" min="0" max="500" value="0" required></div>
+          <div class="field"><label for="customCarbs">Carbs (g)</label><input id="customCarbs" type="number" inputmode="decimal" min="0" max="500" value="0" required></div>
+          <div class="field"><label for="customFat">Fat (g)</label><input id="customFat" type="number" inputmode="decimal" min="0" max="500" value="0" required></div>
+          <div class="field full"><div class="note" id="macroEnergyHint"></div></div>
+          <div class="field full"><button class="btn" type="submit">Save to my foods</button></div>
+        </form>
+        <h4>My saved foods &amp; recipes</h4>
+        <div class="list" id="myFoods"></div>
+      </details>
+    </article>
+  </div>
+</section>
+
+<!-- ================= TRAINING ================= -->
+<section class="section" id="workout" aria-labelledby="trainTitle">
+  <div class="hero"><div>
+    <div class="eyebrow">TRAINING</div>
+    <h2 id="trainTitle">Workout</h2>
+    <p>Start a session, log each set, and let the rest timer run. Suggestions are conservative and never change anything on their own. Stop for sharp pain; get coaching if unsure of technique.</p>
+  </div></div>
+  <div class="grid">
+    <article class="card span12">
+      <div class="cardhead"><h3>Your plan</h3><span class="pill" id="planLevelLabel"></span></div>
+      <div class="formgrid">
+        <div class="field"><label for="planLevel">Training experience</label><select id="planLevel"><option value="beginner">Beginner · full body A/B</option><option value="intermediate">Intermediate · upper / lower</option><option value="advanced">Advanced · volume-managed</option></select></div>
+        <div class="field"><label for="planEquipment">Equipment today</label><select id="planEquipment"><option value="home">Home · bodyweight / basic kit</option><option value="gym">Gym · full equipment</option></select></div>
+      </div>
+      <div id="planInfo" class="note" style="margin-top:12px"></div>
+      <h4>Start a session</h4>
+      <div class="chips" id="sessionPicker"></div>
+      <p class="sub" id="planGuide" style="margin-top:10px"></p>
+    </article>
+
+    <article class="card span12 hidden" id="sessionCard" aria-live="off">
+      <div class="sessionbar" id="sessionBar">
+        <div><div class="sub" style="color:#d6e8dc" id="sessionTitle"></div><div class="time" id="restDisplay">Ready</div></div>
+        <div class="actions"><button class="btn" id="restSkip">Skip rest</button><button class="btn" id="restAdd">+30s</button></div>
+      </div>
+      <div id="sessionBody"></div>
+      <div class="field" style="margin-top:6px"><label for="restSecs">Rest timer after each set</label>
+        <select id="restSecs"><option value="60">1 min</option><option value="90" selected>1 min 30 s</option><option value="120">2 min</option><option value="180">3 min</option></select></div>
+      <div class="actions" style="margin-top:14px">
+        <button class="btn" id="finishSession">Finish &amp; save session</button>
+        <button class="btn danger" id="discardSession">Discard</button>
+      </div>
+    </article>
+
+    <article class="card span7">
+      <div class="cardhead"><h3>History</h3><span class="pill" id="exerciseCount"></span></div>
+      <div id="exerciseDiary"></div>
+      <h4>Personal bests</h4>
+      <div id="personalRecords" class="daylist"></div>
+    </article>
+
+    <article class="card span5">
+      <details class="fold" open><summary>Quick log (off-plan exercise)</summary>
+        <form id="exerciseForm" class="formgrid" style="margin-top:8px">
+          <div class="field full"><label for="workoutName">Exercise</label><input id="workoutName" required maxlength="80" placeholder="e.g. Barbell squat"></div>
+          <div class="field"><label for="exerciseSets">Sets</label><input id="exerciseSets" type="number" inputmode="numeric" min="1" max="30" value="3" required></div>
+          <div class="field"><label for="exerciseReps">Reps per set</label><input id="exerciseReps" type="number" inputmode="numeric" min="1" max="200" value="10" required></div>
+          <div class="field"><label for="exerciseWeight">Load (kg)</label><input id="exerciseWeight" type="number" inputmode="decimal" min="0" max="1000" step="0.25" value="0" required></div>
+          <div class="field"><label for="exerciseRpe">Effort (RPE 1–10)</label><input id="exerciseRpe" type="number" inputmode="numeric" min="1" max="10" value="7" required></div>
+          <div class="field full"><label for="workoutNotes">Notes (optional)</label><input id="workoutNotes" maxlength="240" placeholder="Form, equipment…"></div>
+          <div class="field full"><button class="btn" type="submit">＋ Save exercise</button></div>
+        </form>
+      </details>
+      <details class="fold"><summary>Cardio / walking</summary>
+        <form id="cardioForm" class="formgrid" style="margin-top:8px">
+          <div class="field"><label for="cardioKind">Type</label><select id="cardioKind"><option>Walk</option><option>Run</option><option>Cycle</option><option>Swim</option><option>Other</option></select></div>
+          <div class="field"><label for="cardioMin">Minutes</label><input id="cardioMin" type="number" inputmode="numeric" min="1" max="600" value="30" required></div>
+          <div class="field"><label for="cardioRpe">Effort (1–10)</label><input id="cardioRpe" type="number" inputmode="numeric" min="1" max="10" value="4" required></div>
+          <div class="field"><label>&nbsp;</label><button class="btn" type="submit">＋ Save</button></div>
+        </form>
+        <div id="cardioList" class="daylist" style="margin-top:10px"></div>
+      </details>
+    </article>
+  </div>
+</section>
+
+<!-- ================= PROGRESS ================= -->
+<section class="section" id="progress" aria-labelledby="progTitle">
+  <div class="hero"><div>
+    <div class="eyebrow">MEASURE WHAT MATTERS</div>
+    <h2 id="progTitle">Progress</h2>
+    <p>Scale weight is noisy and is not a body-fat measurement. Look at the smoothed trend, your waist, and your strength together.</p>
+  </div></div>
+  <div class="grid">
+    <article class="card span5">
+      <div class="cardhead"><h3>Log measurements</h3></div>
+      <form id="weightForm" class="formgrid">
+        <div class="field"><label for="weightInput">Body weight (kg)</label><input id="weightInput" type="number" inputmode="decimal" min="20" max="400" step="0.1" required placeholder="e.g. 94.6"></div>
+        <div class="field"><label for="waistInput">Waist (cm, optional)</label><input id="waistInput" type="number" inputmode="decimal" min="30" max="250" step="0.1" placeholder="e.g. 98"></div>
+        <div class="field full"><label for="measureDate">Date</label><input id="measureDate" type="date" required></div>
+        <div class="field full"><button class="btn" type="submit">Save measurement</button></div>
+      </form>
+      <div class="stats four" style="margin-top:16px">
+        <div class="stat"><label>Latest</label><strong id="pLatest">—</strong><small>kg</small></div>
+        <div class="stat"><label>Trend</label><strong id="pTrend">—</strong><small>kg (smoothed)</small></div>
+        <div class="stat"><label>Rate</label><strong id="pRate">—</strong><small id="pRateNote">kg / week</small></div>
+        <div class="stat"><label>Waist</label><strong id="pWaist">—</strong><small>cm</small></div>
+      </div>
+      <p class="sub" id="rateExplain"></p>
+    </article>
+    <article class="card span7">
+      <div class="cardhead"><h3>Weight history</h3><span class="pill">Dots = weigh-ins · line = trend</span></div>
+      <div class="seg" role="group" aria-label="Chart range" data-seg="prog"><button type="button" data-range="7">7d</button><button type="button" data-range="14">14d</button><button type="button" data-range="30">30d</button><button type="button" data-range="90">90d</button></div>
+      <svg class="chart" id="progressChart" viewBox="0 0 400 190" role="img" aria-label="Weight history chart" style="height:190px"></svg>
+      <p class="sub readout" id="readoutProg" aria-live="polite">Tap a dot to see that day.</p><p class="sub" id="rangeStatsProg"></p>
+      <div id="weightHistory" class="daylist" style="margin-top:10px"></div>
+    </article>
+
+    <article class="card span12">
+      <div class="cardhead"><h3>Weekly review</h3><span class="pill">Last 7 days</span></div>
+      <div id="weeklyReview"></div>
+    </article>
+
+    <article class="card span12">
+      <div class="cardhead"><h3>Estimated energy use</h3><span class="pill warn" id="expPill">Estimate</span></div>
+      <div id="expBody"></div>
+    </article>
+
+    <article class="card span12">
+      <div class="cardhead"><h3>Target check</h3><span class="pill warn">Experimental · you decide</span></div>
+      <div id="targetCheck"></div>
+    </article>
+
+    <article class="card span12">
+      <div class="cardhead"><h3>Training load &amp; consistency</h3><span class="pill">From your logs</span></div>
+      <div class="stats four">
+        <div class="stat"><label>Training days · 7d</label><strong id="weeklySessions">0</strong><small id="weeklySessionsCaption">days with training</small></div>
+        <div class="stat"><label>Total reps · 7d</label><strong id="weeklyReps">0</strong><small>all logged sets</small></div>
+        <div class="stat"><label>Load volume · 7d</label><strong id="weeklyVolume">0</strong><small>kg × reps*</small></div>
+        <div class="stat"><label>Food-log days · 7d</label><strong id="weeklyFoodDays">0</strong><small>days with entries</small></div>
+      </div>
+      <p class="sub">*Load volume only counts loaded sets; bodyweight work shows up in total reps.</p>
+      <div class="cardhead" style="margin-top:16px"><h3>Weekly load volume</h3><span class="pill">6 weeks</span></div>
+      <svg class="chart" id="trainingVolumeChart" viewBox="0 0 400 180" role="img" aria-label="Weekly training volume chart"></svg>
+      <h4>Exercise trends</h4>
+      <div id="exerciseTrends" class="daylist"></div>
+      <h4>Last 4 weeks</h4>
+      <div id="consistencySummary" class="note"></div>
+    </article>
+  </div>
+</section>
+
+<!-- ================= SETTINGS ================= -->
+<section class="section" id="settings" aria-labelledby="setTitle">
+  <div class="hero"><div>
+    <div class="eyebrow">YOUR PROFILE</div>
+    <h2 id="setTitle">Growth &amp; settings</h2>
+    <p>Your profile, targets and data. Everything stays on this device.</p>
+  </div></div>
+  <div class="grid">
+    <article class="card span12">
+      <div class="cardhead"><h3>Personal profile</h3><span class="pill" id="profileStatus"></span></div>
+      <form id="personalProfileForm" class="formgrid">
+        <div class="field"><label for="profileAge">Age</label><input id="profileAge" type="number" inputmode="numeric" min="13" max="100" step="1" required></div>
+        <div class="field"><label for="profileHeight">Height (cm)</label><input id="profileHeight" type="number" inputmode="decimal" min="100" max="250" step="0.1" required></div>
+        <div class="field"><label for="profileCurrentWeight">Weight today (kg)</label><input id="profileCurrentWeight" type="number" inputmode="decimal" min="25" max="350" step="0.1" required></div>
+        <div class="field"><label for="profileActivity">Usual activity outside workouts</label><select id="profileActivity"><option value="sedentary">Mostly sitting</option><option value="light">Lightly active</option><option value="moderate">Moderately active</option><option value="high">Very active</option></select></div>
+        <div class="field"><label for="profileExperience">Training experience</label><select id="profileExperience"><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select></div>
+        <div class="field"><label for="profileEquipment">Training access</label><select id="profileEquipment"><option value="home">Home / bodyweight</option><option value="gym">Gym</option><option value="both">Home and gym</option></select></div>
+        <div class="field"><label for="profileDiet">Food preference</label><select id="profileDiet"><option value="flexible">Flexible</option><option value="vegetarian">Vegetarian</option><option value="vegan">Vegan</option><option value="eggetarian">Vegetarian + eggs</option><option value="nonvegetarian">Includes meat/fish</option></select></div>
+        <div class="field"><label for="profileSessions">Workout days per week</label><select id="profileSessions"><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option></select></div>
+        <div class="field full"><button class="btn" type="submit">Save profile</button></div>
+      </form>
+    </article>
+
+    <article class="card span6">
+      <div class="cardhead"><h3>Goal &amp; daily targets</h3><span class="pill warn">Estimates, not medical advice</span></div>
+      <form id="settingsForm" class="formgrid">
+        <div class="field"><label for="profileName">Display name</label><input id="profileName" maxlength="50" placeholder="Optional"></div>
+        <div class="field"><label for="profileGoal">Goal</label><select id="profileGoal"><option value="maintain">Maintain weight</option><option value="lose">Lose fat</option><option value="gain">Gain weight / muscle</option><option value="recomp">Body recomposition</option></select></div>
+        <div class="field"><label for="targetCalories">Calories (kcal/day)</label><input id="targetCalories" type="number" inputmode="numeric" min="800" max="7000" required></div>
+        <div class="field"><label for="targetProtein">Protein (g/day)</label><input id="targetProtein" type="number" inputmode="numeric" min="0" max="500" required></div>
+        <div class="field"><label for="targetCarbs">Carbohydrates (g/day)</label><input id="targetCarbs" type="number" inputmode="numeric" min="0" max="1000" required></div>
+        <div class="field"><label for="targetFat">Fat (g/day)</label><input id="targetFat" type="number" inputmode="numeric" min="0" max="500" required></div>
+        <div class="field full"><div class="note" id="macroCheckNote"></div></div>
+        <div class="field full"><button class="btn" type="submit">Save goal &amp; targets</button></div>
+        <div class="field full"><button class="btn secondary" type="button" id="resetPlan">Reset to my starter plan (2,200 kcal · 160 P · 245 C · 64 F)</button></div>
+      </form>
+      <p class="sub" style="margin-top:10px">The starter plan is an estimate for tracking, not your measured energy need. Review it after 2–3 weeks of consistent logging. Ask a clinician first if you have a medical condition or take medication.</p>
+    </article>
+
+    <article class="card span6">
+      <div class="cardhead"><h3>Privacy &amp; backup</h3><span class="pill ok">On this device only</span></div>
+      <div class="settingsrow"><div><strong>Appearance</strong><span>Auto follows your device.</span></div><select id="themeSel" aria-label="Appearance"><option value="auto">Auto</option><option value="light">Light</option><option value="dark">Dark</option></select></div>
+      <div class="settingsrow"><div><strong>Export backup (JSON)</strong><span id="lastBackup">Full backup you can restore later.</span></div><button class="btn secondary small" id="exportBtn">Export</button></div>
+      <div class="settingsrow"><div><strong>Encrypted backup</strong><span>Protected with a passphrase you choose (AES-256). If you forget it, the backup cannot be opened — by anyone.</span></div><button class="btn secondary small" id="exportEncBtn">Export encrypted</button></div>
+      <div class="settingsrow"><div><strong>Import backup</strong><span>Replaces data on this device after you confirm.</span></div><button class="btn secondary small" id="importBtn">Import</button><input id="importFile" type="file" accept="application/json,.json" class="hidden" aria-label="Choose backup file"></div>
+      <div class="settingsrow"><div><strong>Export CSV</strong><span>For spreadsheets.</span></div><div class="actions"><button class="btn secondary small" id="csvFood">Food</button><button class="btn secondary small" id="csvWeight">Weight</button><button class="btn secondary small" id="csvWorkout">Workouts</button></div></div>
+      <div class="settingsrow"><div><strong>Install app</strong><span>Add FITWISE to your home screen.</span></div><button class="btn secondary small" id="installBtn">Install</button></div>
+      <div class="settingsrow"><div><strong>Delete all data</strong><span>Cannot be undone without a backup.</span></div><button class="btn danger small" id="clearBtn">Delete</button></div>
+      <div class="note" style="margin-top:12px" id="storageNote">Your entries stay in this browser and are not encrypted. Anyone with access to this browser profile could read them. Clearing site data erases them — export a backup regularly.</div>
+      <div id="storageMeter" class="hidden" style="margin-top:8px"><span class="sub" id="storageMeterText"></span><div class="meter" aria-hidden="true"><span id="storageMeterBar" style="width:0"></span></div></div>
+    </article>
+
+    <article class="card span12">
+      <div class="cardhead"><h3>What's reliable and what isn't</h3><span class="pill" id="versionPill"></span></div>
+      <div class="daylist">
+        <div class="dayrow"><span>Food diary, recipes, custom foods, macro totals</span><strong style="color:var(--green)">Working</strong></div>
+        <div class="dayrow"><span>Workout sessions, rest timer, history, personal bests</span><strong style="color:var(--green)">Working</strong></div>
+        <div class="dayrow"><span>Smoothed weight trend, weekly review</span><strong style="color:var(--green)">Working</strong></div>
+        <div class="dayrow"><span>Backup / restore, CSV export, offline use</span><strong style="color:var(--green)">Working</strong></div>
+        <div class="dayrow"><span>Target check (calorie suggestion)</span><strong style="color:var(--orange)">Experimental — not validated</strong></div>
+        <div class="dayrow"><span>Food values</span><strong style="color:var(--orange)">Approximate</strong></div>
+        <div class="dayrow"><span>Barcode / photo logging, accounts, cloud sync, wearables</span><strong style="color:var(--muted)">Not included</strong></div>
+      </div>
+    </article>
+  </div>
+</section>
+</main>
+<div class="foot" id="footLine"></div>
+</div>
+
+<div class="quickbar" id="quickbar" role="group" aria-label="Quick log"><button type="button" class="qb main" data-action="quick-search">🔍 Log food</button><span id="quickbarChips" class="qbchips"></span><button type="button" class="qb" id="quickWater" aria-label="Add 250 ml water">💧 +250</button></div>
+<div class="mobilebar" role="navigation" aria-label="Quick navigation">
+  <button data-go="home" class="active" aria-label="Home"><span>⌂</span>Home</button>
+  <button data-go="food" aria-label="Nutrition"><span>◉</span>Nutrition</button>
+  <button data-go="workout" aria-label="Training"><span>↗</span>Train</button>
+  <button data-go="progress" aria-label="Progress"><span>⌁</span>Progress</button>
+  <button data-go="settings" aria-label="Growth and settings"><span>✳</span>Growth</button>
+</div>
+
+<!-- Add / edit food -->
+<dialog id="foodDialog" aria-labelledby="fdTitle">
+  <form method="dialog" id="foodForm">
+    <div><h3 id="fdTitle"></h3><p class="sub" id="fdMeta"></p></div>
+    <div class="formgrid">
+      <div class="field"><label for="fdAmount">Amount</label><input id="fdAmount" type="number" inputmode="decimal" step="any" min="0" required></div>
+      <div class="field"><label for="fdUnit">Measured in</label><select id="fdUnit"></select></div>
+      <div class="field full"><label for="fdMeal">Meal</label><select id="fdMeal"><option value="breakfast">Breakfast</option><option value="lunch">Lunch</option><option value="snack">Snack</option><option value="dinner">Dinner</option></select></div>
+    </div>
+    <div class="preview" aria-live="polite" id="fdPreview"></div>
+    <div class="note bad hidden" id="fdError" role="alert"></div>
+    <div class="dlgfoot"><button class="btn secondary" type="button" id="fdCancel">Cancel</button><button class="btn" type="submit" id="fdSave">Add to diary</button></div>
+  </form>
+</dialog>
+
+<!-- Recipe builder -->
+<dialog id="passDialog" aria-labelledby="passTitle">
+  <form method="dialog" id="passForm">
+    <h3 id="passTitle">Passphrase</h3>
+    <p class="sub" id="passInfo"></p>
+    <div class="field"><label for="passInput">Passphrase</label><input id="passInput" type="password" autocomplete="off" minlength="8" required></div>
+    <div class="field hidden" id="passConfirmRow"><label for="passInput2">Repeat passphrase</label><input id="passInput2" type="password" autocomplete="off"></div>
+    <div class="note bad hidden" id="passError" role="alert"></div>
+    <div class="dlgfoot"><button class="btn secondary" type="button" id="passCancel">Cancel</button><button class="btn" type="submit" id="passOk">Continue</button></div>
+  </form>
+</dialog>
+<dialog id="mealDialog" aria-labelledby="mealDlgTitle">
+  <form method="dialog" id="mealForm">
+    <h3 id="mealDlgTitle">Save as a meal</h3>
+    <p class="sub" id="mealDlgInfo"></p>
+    <div class="field"><label for="mealName">Name</label><input id="mealName" maxlength="60" required placeholder="e.g. Usual breakfast"></div>
+    <div class="dlgfoot"><button class="btn secondary" type="button" id="mealCancel">Cancel</button><button class="btn" type="submit">Save meal</button></div>
+  </form>
+</dialog>
+<dialog id="recipeDialog" aria-labelledby="rTitle">
+  <form method="dialog" id="recipeForm">
+    <div><h3 id="rTitle">Build a recipe</h3><p class="sub">Add ingredients with their weight. Nutrition per serving is calculated for you.</p></div>
+    <div class="field"><label for="rName">Recipe name</label><input id="rName" maxlength="80" required placeholder="e.g. Chicken curry (mine)"></div>
+    <div class="formgrid">
+      <div class="field"><label for="rServings">Servings it makes</label><input id="rServings" type="number" inputmode="decimal" min="0.5" max="100" step="0.5" value="4" required></div>
+      <div class="field"><label for="rYield">Cooked weight in total (g, optional)</label><input id="rYield" type="number" inputmode="decimal" min="1" max="20000" placeholder="weigh the pot"></div>
+    </div>
+    <div id="rIngs" class="list"></div>
+    <datalist id="foodNames"></datalist>
+    <button class="btn secondary small" type="button" id="rAdd">＋ Add ingredient</button>
+    <div class="preview" id="rPreview" aria-live="polite"></div>
+    <div class="note bad hidden" id="rError" role="alert"></div>
+    <div class="dlgfoot"><button class="btn secondary" type="button" id="rCancel">Cancel</button><button class="btn" type="submit">Save recipe</button></div>
+  </form>
+</dialog>
+
+<div id="toast" role="status" aria-live="polite"><span id="toastMsg"></span><button id="toastAction" class="hidden" type="button"></button></div>
+<div class="sr" id="srLive" aria-live="assertive"></div>
+
+<script src="js/core.js"></script>
+<script src="js/vault.js"></script>
+<script src="js/foods.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
